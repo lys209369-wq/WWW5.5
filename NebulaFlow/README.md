@@ -59,7 +59,6 @@ NebulaFlow 不只是一个打卡 App，而是你的 **Web3 行动记录簿**。�
 - `Activity Detail` – 活动详情 / 报名 / 签到 / 结束等操作
 - `My Journey` – 个人档案三分类展示
 
----
 
 ### 主要智能合约（Contracts）
 
@@ -79,7 +78,6 @@ NebulaFlow 不只是一个打卡 App，而是你的 **Web3 行动记录簿**。�
   - 为完成活动的用户铸造 NFT 勋章
   - 可配置基础 Token URI / 元数据
 
----
 
 # 🔗 用户视角下的一次完整流程
 
