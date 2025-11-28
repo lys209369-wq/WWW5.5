@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PawPals</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#E63946', // 鲜艳红色作为主色调（拼多多风格）
+            secondary: '#457B9D', // 辅助色调整为蓝色系
+            light: '#FFF5F5', // 浅色背景
+            dark: '#1D3557',
+            neutral: '#F9F7F7'
+          },
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .card-hover {
+        @apply transition-all duration-300 hover:shadow-md hover:-translate-y-1;
+      }
+      .btn-primary {
+        @apply bg-primary text-white px-5 py-2.5 rounded-full transition-all duration-300 hover:bg-primary/90 hover:shadow-md;
+      }
+      .btn-secondary {
+        @apply bg-white text-primary border border-primary px-5 py-2.5 rounded-full transition-all duration-300 hover:bg-light;
+      }
+      .filter-active {
+        @apply bg-primary text-white;
+      }
+    }
+  </style>
+</head>
+<body class="font-inter bg-neutral text-dark min-h-screen">
+  <!-- 导航栏 -->
+  <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
+    <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
+          <i class="fa fa-paw text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-primary">PawPals</h1>
+        </div>
+      </div>
+      
+      <div class="hidden md:flex items-center space-x-6">
+        <a href="#" class="font-medium text-gray-600 hover:text-primary transition-colors duration-300 px-1">任务大厅</a>
+        <a href="#" class="font-medium btn-primary">发布任务</a>
+        <a href="#" class="font-medium text-gray-600 hover:text-primary transition-colors duration-300 px-1">我的主页</a>
+      </div>
+      
+      <div class="flex items-center space-x-3">
+        <div class="relative hidden md:block">
+          <input type="text" placeholder="搜索任务..." class="pl-10 pr-4 py-2 rounded-full bg-light focus:outline-none focus:ring-2 focus:ring-primary/30 w-64">
+          <i class="fa fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        </div>
+        <button class="btn-primary hidden md:block">
+          连接钱包
+        </button>
+        <button class="md:hidden text-primary text-xl">
+          <i class="fa fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-6">
+    <!-- 温馨提示 -->
+    <div class="bg-light rounded-xl p-4 mb-6 flex items-start">
+      <i class="fa fa-info-circle text-primary mt-1 mr-3 text-lg"></i>
+      <p class="text-sm text-gray-700">温馨提示：本社区仅限女性用户加入，我们致力于打造安全、友好的宠物爱好者交流空间</p>
+    </div>
+    
+    <!-- 移动端导航 -->
+    <div class="flex md:hidden mb-6 space-x-2 overflow-x-auto pb-2">
+      <button class="flex-shrink-0 btn-secondary">任务大厅</button>
+      <button class="flex-shrink-0 btn-primary">发布任务</button>
+      <button class="flex-shrink-0 btn-secondary">我的主页</button>
+    </div>
+    
+    <!-- 移动端搜索 -->
+    <div class="relative md:hidden mb-6">
+      <input type="text" placeholder="搜索任务..." class="w-full pl-10 pr-4 py-2 rounded-full bg-light focus:outline-none focus:ring-2 focus:ring-primary/30">
+      <i class="fa fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+    </div>
+
+    <!-- 筛选和排序区 -->
+    <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
+      <!-- 筛选按钮 -->
+      <div class="flex flex-wrap gap-3 mb-4">
+        <button id="filterBtn" class="flex items-center bg-light text-dark px-4 py-2 rounded-full text-sm hover:bg-gray-200 transition-colors">
+          <i class="fa fa-filter mr-2"></i> 筛选
+        </button>
+        <button id="sortBtn" class="flex items-center bg-light text-dark px-4 py-2 rounded-full text-sm hover:bg-gray-200 transition-colors">
+          <i class="fa fa-sort mr-2"></i> 排序
+        </button>
+        
+        <!-- 筛选标签展示区 -->
+        <div id="filterTags" class="flex flex-wrap gap-2">
+          <!-- 选中的筛选条件会动态显示在这里 -->
+        </div>
+      </div>
+      
+      <!-- 任务类型快捷筛选 -->
+      <div class="flex overflow-x-auto pb-2 gap-2">
+        <button class="whitespace-nowrap px-4 py-2 rounded-full bg-primary text-white text-sm">全部任务</button>
+        <button class="whitespace-nowrap px-4 py-2 rounded-full bg-white border border-primary text-primary text-sm hover:bg-light transition-colors">代遛狗</button>
+        <button class="whitespace-nowrap px-4 py-2 rounded-full bg-white border border-primary text-primary text-sm hover:bg-light transition-colors">上门喂养</button>
+        <button class="whitespace-nowrap px-4 py-2 rounded-full bg-white border border-primary text-primary text-sm hover:bg-light transition-colors">宠物寄养</button>
+        <button class="whitespace-nowrap px-4 py-2 rounded-full bg-white border border-primary text-primary text-sm hover:bg-light transition-colors">宠物医疗</button>
+        <button class="whitespace-nowrap px-4 py-2 rounded-full bg-white border border-primary text-primary text-sm hover:bg-light transition-colors">宠物训练</button>
+      </div>
+    </div>
+    
+    <!-- 筛选面板 (默认隐藏) -->
+    <div id="filterPanel" class="hidden bg-white rounded-xl shadow-lg p-5 mb-6 z-30 relative">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-bold">筛选条件</h3>
+        <button id="closeFilter" class="text-gray-500 hover:text-gray-700">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+      
+      <!-- 城市筛选 -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">城市</label>
+        <select class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30">
+          <option value="">全国</option>
+          <option value="beijing">北京市</option>
+          <option value="shanghai">上海市</option>
+          <option value="guangzhou">广州市</option>
+          <option value="shenzhen">深圳市</option>
+        </select>
+      </div>
+      
+      <!-- 区域筛选 -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">区域</label>
+        <select class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30">
+          <option value="">全部区域</option>
+          <option value="chaoyang">朝阳区</option>
+          <option value="haidian">海淀区</option>
+          <option value="dongcheng">东城区</option>
+          <option value="xicheng">西城区</option>
+        </select>
+      </div>
+      
+      <!-- 金额范围 -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">金额范围 (ETH)</label>
+        <div class="flex gap-2">
+          <input type="number" placeholder="最低" class="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30" step="0.001" min="0">
+          <span class="flex items-center">至</span>
+          <input type="number" placeholder="最高" class="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30" step="0.001" min="0">
+        </div>
+      </div>
+      
+      <!-- 距离范围 -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">距离范围</label>
+        <div class="flex flex-wrap gap-2">
+          <button class="px-3 py-1 border border-gray-300 rounded-full text-sm hover:border-primary hover:text-primary transition-colors">1公里内</button>
+          <button class="px-3 py-1 border border-gray-300 rounded-full text-sm hover:border-primary hover:text-primary transition-colors">3公里内</button>
+          <button class="px-3 py-1 border border-primary text-primary rounded-full text-sm">5公里内</button>
+          <button class="px-3 py-1 border border-gray-300 rounded-full text-sm hover:border-primary hover:text-primary transition-colors">10公里内</button>
+          <button class="px-3 py-1 border border-gray-300 rounded-full text-sm hover:border-primary hover:text-primary transition-colors">20公里内</button>
+        </div>
+      </div>
+      
+      <!-- 发布时间 -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">发布时间</label>
+        <div class="flex flex-wrap gap-2">
+          <button class="px-3 py-1 border border-primary text-primary rounded-full text-sm">24小时内</button>
+          <button class="px-3 py-1 border border-gray-300 rounded-full text-sm hover:border-primary hover:text-primary transition-colors">3天内</button>
+          <button class="px-3 py-1 border border-gray-300 rounded-full text-sm hover:border-primary hover:text-primary transition-colors">1周内</button>
+          <button class="px-3 py-1 border border-gray-300 rounded-full text-sm hover:border-primary hover:text-primary transition-colors">1个月内</button>
+        </div>
+      </div>
+      
+      <div class="flex gap-3">
+        <button class="flex-1 btn-primary">确认筛选</button>
+        <button class="flex-1 btn-secondary">重置</button>
+      </div>
+    </div>
+    
+    <!-- 排序面板 (默认隐藏) -->
+    <div id="sortPanel" class="hidden bg-white rounded-xl shadow-lg p-5 mb-6 z-30 relative">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-bold">排序方式</h3>
+        <button id="closeSort" class="text-gray-500 hover:text-gray-700">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="space-y-3">
+        <button class="w-full text-left p-3 rounded-lg bg-light hover:bg-gray-200 transition-colors">
+          <div class="flex justify-between">
+            <span>默认排序</span>
+            <i class="fa fa-check text-primary"></i>
+          </div>
+        </button>
+        <button class="w-full text-left p-3 rounded-lg hover:bg-gray-200 transition-colors">
+          <div class="flex justify-between">
+            <span>距离最近</span>
+            <i class="fa fa-sort text-gray-400"></i>
+          </div>
+        </button>
+        <button class="w-full text-left p-3 rounded-lg hover:bg-gray-200 transition-colors">
+          <div class="flex justify-between">
+            <span>金额从低到高</span>
+            <i class="fa fa-sort-amount-asc text-gray-400"></i>
+          </div>
+        </button>
+        <button class="w-full text-left p-3 rounded-lg hover:bg-gray-200 transition-colors">
+          <div class="flex justify-between">
+            <span>金额从高到低</span>
+            <i class="fa fa-sort-amount-desc text-gray-400"></i>
+          </div>
+        </button>
+        <button class="w-full text-left p-3 rounded-lg hover:bg-gray-200 transition-colors">
+          <div class="flex justify-between">
+            <span>好评优先</span>
+            <i class="fa fa-star text-gray-400"></i>
+          </div>
+        </button>
+        <button class="w-full text-left p-3 rounded-lg hover:bg-gray-200 transition-colors">
+          <div class="flex justify-between">
+            <span>最新发布</span>
+            <i class="fa fa-clock-o text-gray-400"></i>
+          </div>
+        </button>
+      </div>
+    </div>
+    
+    <!-- 服务需求标题 -->
+    <div class="mb-6">
+      <h2 class="text-2xl font-bold text-dark flex items-center">
+        <i class="fa fa-map-marker text-primary mr-2"></i>附近的任务需求
+      </h2>
+    </div>
+    
+    <!-- 服务需求列表 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- 代遛狗 -->
+      <div class="bg-white rounded-xl shadow p-5 card-hover">
+        <div class="flex justify-between items-start mb-4">
+          <div class="flex items-center">
+            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <i class="fa fa-dog"></i>
+            </div>
+            <h3 class="ml-3 font-semibold">代遛狗</h3>
+          </div>
+          <span class="bg-primary/10 text-primary px-2 py-1 rounded-lg text-sm font-medium font-bold">0.02 ETH</span>
+        </div>
+        
+        <p class="text-gray-600 text-sm mb-4">需要每天下午4点遛金毛，持续1小时，需要带拾便袋和水</p>
+        
+        <div class="flex items-center text-gray-500 text-sm mb-4">
+          <i class="fa fa-map-marker mr-1"></i>
+          <span>北京市朝阳区</span>
+          <span class="mx-2">•</span>
+          <span class="font-medium text-primary">2.5公里</span>
+        </div>
+        
+        <div class="flex items-center text-gray-500 text-sm mb-4">
+          <i class="fa fa-clock-o mr-1"></i>
+          <span>发布于 2小时前</span>
+          <span class="mx-2">•</span>
+          <span>截止：3天后</span>
+        </div>
+        
+        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+          <div class="flex items-center">
+            <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary text-xs">
+              PL
+            </div>
+            <div class="ml-2">
+              <p class="text-xs text-gray-600">Luna_123</p>
+              <div class="flex items-center">
+                <i class="fa fa-star text-yellow-400 text-xs"></i>
+                <span class="text-xs text-gray-500 ml-1">4.9 (128)</span>
+              </div>
+            </div>
+          </div>
+          <span class="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded">需验证身份</span>
+        </div>
+      </div>
+      
+      <!-- 上门喂养 -->
+      <div class="bg-white rounded-xl shadow p-5 card-hover">
+        <div class="flex justify-between items-start mb-4">
+          <div class="flex items-center">
+            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <i class="fa fa-cat"></i>
+            </div>
+            <h3 class="ml-3 font-semibold">上门喂养</h3>
+          </div>
+          <span class="bg-primary/10 text-primary px-2 py-1 rounded-lg text-sm font-medium font-bold">0.015 ETH</span>
+        </div>
+        
+        <p class="text-gray-600 text-sm mb-4">出差三天，需要上门喂猫和清理猫砂，每天一次，需拍视频反馈</p>
+        
+        <div class="flex items-center text-gray-500 text-sm mb-4">
+          <i class="fa fa-map-marker mr-1"></i>
+          <span>上海市浦东新区</span>
+          <span class="mx-2">•</span>
+          <span class="font-medium text-primary">1.8公里</span>
+        </div>
+        
+        <div class="flex items-center text-gray-500 text-sm mb-4">
+          <i class="fa fa-clock-o mr-1"></i>
+          <span>发布于 5小时前</span>
+          <span class="mx-2">•</span>
+          <span>截止：今天 20:00</span>
+        </div>
+        
+        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+          <div class="flex items-center">
+            <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary text-xs">
+              PL
+            </div>
+            <div class="ml-2">
+              <p class="text-xs text-gray-600">Momo_456</p>
+              <div class="flex items-center">
+                <i class="fa fa-star text-yellow-400 text-xs"></i>
+                <span class="text-xs text-gray-500 ml-1">4.7 (86)</span>
+              </div>
+            </div>
+          </div>
+          <span class="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded">需验证身份</span>
+        </div>
+      </div>
+      
+      <!-- 宠物寄养 -->
+      <div class="bg-white rounded-xl shadow p-5 card-hover">
+        <div class="flex justify-between items-start mb-4">
+          <div class="flex items-center">
+            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <i class="fa fa-home"></i>
+            </div>
+            <h3 class="ml-3 font-semibold">宠物寄养</h3>
+          </div>
+          <span class="bg-primary/10 text-primary px-2 py-1 rounded-lg text-sm font-medium font-bold">0.03 ETH</span>
+        </div>
+        
+        <p class="text-gray-600 text-sm mb-4">周末寄养两只柯基，提供狗粮和玩具，需要每天遛两次</p>
+        
+        <div class="flex items-center text-gray-500 text-sm mb-4">
+          <i class="fa fa-map-marker mr-1"></i>
+          <span>广州市天河区</span>
+          <span class="mx-2">•</span>
+          <span class="font-medium text-primary">4.2公里</span>
+        </div>
+        
+        <div class="flex items-center text-gray-500 text-sm mb-4">
+          <i class="fa fa-clock-o mr-1"></i>
+          <span>发布于 1天前</span>
+          <span class="mx-2">•</span>
+          <span>截止：周六 10:00</span>
+        </div>
+        
+        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+          <div class="flex items-center">
+            <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary text-xs">
+              PL
+            </div>
+            <div class="ml-2">
+              <p class="text-xs text-gray-600">Coco_789</p>
+              <div class="flex items-center">
+                <i class="fa fa-star text-yellow-400 text-xs"></i>
+                <span class="text-xs text-gray-500 ml-1">5.0 (42)</span>
+              </div>
+            </div>
+          </div>
+          <span class="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded">需验证身份</span>
+        </div>
+      </div>
+      
+      <!-- 陪诊服务 -->
+      <div class="bg-white rounded-xl shadow p-5 card-hover">
+        <div class="flex justify-between items-start mb-4">
+          <div class="flex items-center">
+            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <i class="fa fa-medkit"></i>
+            </div>
+            <h3 class="ml-3 font-semibold">宠物陪诊</h3>
+          </div>
+          <span class="bg-primary/10 text-primary px-2 py-1 rounded-lg text-sm font-medium font-bold">0.025 ETH</span>
+        </div>
+        
+        <p class="text-gray-600 text-sm mb-4">需要陪同带老年犬去做体检，约2小时，医院在南山宠物医院</p>
+        
+        <div class="flex items-center text-gray-500 text-sm mb-4">
+          <i class="fa fa-map-marker mr-1"></i>
+          <span>深圳市南山区</span>
+          <span class="mx-2">•</span>
+          <span class="font-medium text-primary">3.7公里</span>
+        </div>
+        
+        <div class="flex items-center text-gray-500 text-sm mb-4">
+          <i class="fa fa-clock-o mr-1"></i>
+          <span>发布于 3小时前</span>
+          <span class="mx-2">•</span>
+          <span>截止：明天 12:00</span>
+        </div>
+        
+        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+          <div class="flex items-center">
+            <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary text-xs">
+              PL
+            </div>
+            <div class="ml-2">
+              <p class="text-xs text-gray-600">Jenny_012</p>
+              <div class="flex items-center">
+                <i class="fa fa-star text-yellow-400 text-xs"></i>
+                <span class="text-xs text-gray-500 ml-1">4.8 (67)</span>
+              </div>
+            </div>
+          </div>
+          <span class="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded">需验证身份</span>
+        </div>
+      </div>
+      
+      <!-- 宠物训练 -->
+      <div class="bg-white rounded-xl shadow p-5 card-hover">
+        <div class="flex justify-between items-start mb-4">
+          <div class="flex items-center">
+            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <i class="fa fa-graduation-cap"></i>
+            </div>
+            <h3 class="ml-3 font-semibold">宠物训练</h3>
+          </div>
+          <span class="bg-primary/10 text-primary px-2 py-1 rounded-lg text-sm font-medium font-bold">0.05 ETH</span>
+        </div>
+        
+        <p class="text-gray-600 text-sm mb-4">需要训练边牧基础指令：坐、卧、握手，每周3次，每次1小时</p>
+        
+        <div class="flex items-center text-gray-500 text-sm mb-4">
+          <i class="fa fa-map-marker mr-1"></i>
+          <span>北京市海淀区</span>
+          <span class="mx-2">•</span>
+          <span class="font-medium text-primary">5.3公里</span>
+        </div>
+        
+        <div class="flex items-center text-gray-500 text-sm mb-4">
+          <i class="fa fa-clock-o mr-1"></i>
+          <span>发布于 6小时前</span>
+          <span class="mx-2">•</span>
+          <span>截止：1周后</span>
+        </div>
+        
+        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+          <div class="flex items-center">
+            <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary text-xs">
+              PL
+            </div>
+            <div class="ml-2">
+              <p class="text-xs text-gray-600">Sophie_345</p>
+              <div class="flex items-center">
+                <i class="fa fa-star text-yellow-400 text-xs"></i>
+                <span class="text-xs text-gray-500 ml-1">4.9 (93)</span>
+              </div>
+            </div>
+          </div>
+          <span class="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded">需验证身份</span>
+        </div>
+      </div>
+      
+      <!-- 宠物摄影 -->
+      <div class="bg-white rounded-xl shadow p-5 card-hover">
+        <div class="flex justify-between items-start mb-4">
+          <div class="flex items-center">
+            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <i class="fa fa-camera"></i>
+            </div>
+            <h3 class="ml-3 font-semibold">宠物摄影</h3>
+          </div>
+          <span class="bg-primary/10 text-primary px-2 py-1 rounded-lg text-sm font-medium font-bold">0.04 ETH</span>
+        </div>
+        
+        <p class="text-gray-600 text-sm mb-4">为我的布偶猫拍摄一组生日写真，需要室内布景，精修15张照片</p>
+        
+        <div class="flex items-center text-gray-500 text-sm mb-4">
+          <i class="fa fa-map-marker mr-1"></i>
+          <span>上海市静安区</span>
+          <span class="mx-2">•</span>
+          <span class="font-medium text-primary">2.1公里</span>
+        </div>
+        
+        <div class="flex items-center text-gray-500 text-sm mb-4">
+          <i class="fa fa-clock-o mr-1"></i>
+          <span>发布于 12小时前</span>
+          <span class="mx-2">•</span>
+          <span>截止：3天后</span>
+        </div>
+        
+        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+          <div class="flex items-center">
+            <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary text-xs">
+              PL
+            </div>
+            <div class="ml-2">
+              <p class="text-xs text-gray-600">Linda_678</p>
+              <div class="flex items-center">
+                <i class="fa fa-star text-yellow-400 text-xs"></i>
+                <span class="text-xs text-gray-500 ml-1">4.6 (52)</span>
+              </div>
+            </div>
+          </div>
+          <span class="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded">需验证身份</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 加载更多按钮 -->
+    <div class="mt-10 text-center">
+      <button class="btn-secondary px-8">
+        加载更多 <i class="fa fa-chevron-down ml-1"></i>
+      </button>
+    </div>
+  </main>
+  
+  <!-- 底部导航 -->
+  <footer class="bg-white border-t border-gray-200 py-6 mt-12">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center mb-4 md:mb-0">
+          <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
+            <i class="fa fa-paw"></i>
+          </div>
+          <span class="ml-2 font-bold text-primary">PawPals</span>
+        </div>
+        
+        <div class="flex space-x-6 text-gray-500 mb-4 md:mb-0">
+          <a href="#" class="hover:text-primary transition-colors duration-300">关于我们</a>
+          <a href="#" class="hover:text-primary transition-colors duration-300">社区规则</a>
+          <a href="#" class="hover:text-primary transition-colors duration-300">帮助中心</a>
+          <a href="#" class="hover:text-primary transition-colors duration-300">联系我们</a>
+        </div>
+        
+        <div class="flex space-x-4">
+          <a href="#" class="w-8 h-8 rounded-full bg-light flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors duration-300">
+            <i class="fa fa-comments"></i>
+          </a>
+          <a href="#" class="w-8 h-8 rounded-full bg-light flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors duration-300">
+            <i class="fa fa-twitter"></i>
+          </a>
+          <a href="#" class="w-8 h-8 rounded-full bg-light flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors duration-300">
+            <i class="fa fa-instagram"></i>
+          </a>
+        </div>
+      </div>
+      
+      <div class="text-center mt-6 text-sm text-gray-400">
+        © 2023 PawPals. 保留所有权利。
+      </div>
+    </div>
+  </footer>
+  
+  <!-- 悬浮按钮 -->
+  <div class="fixed bottom-8 right-8 z-40">
+    <button class="w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center text-xl hover:bg-primary/90 transition-all duration-300 hover:scale-110">
+      <i class="fa fa-plus"></i>
+    </button>
+  </div>
+
+  <script>
+    // 筛选和排序面板交互
+    document.addEventListener('DOMContentLoaded', () => {
+      const filterBtn = document.getElementById('filterBtn');
+      const sortBtn = document.getElementById('sortBtn');
+      const filterPanel = document.getElementById('filterPanel');
+      const sortPanel = document.getElementById('sortPanel');
+      const closeFilter = document.getElementById('closeFilter');
+      const closeSort = document.getElementById('closeSort');
+      
+      // 打开筛选面板
+      filterBtn.addEventListener('click', () => {
+        filterPanel.classList.toggle('hidden');
+        sortPanel.classList.add('hidden'); // 关闭排序面板
+      });
+      
+      // 打开排序面板
+      sortBtn.addEventListener('click', () => {
+        sortPanel.classList.toggle('hidden');
+        filterPanel.classList.add('hidden'); // 关闭筛选面板
+      });
+      
+      // 关闭筛选面板
+      closeFilter.addEventListener('click', () => {
+        filterPanel.classList.add('hidden');
+      });
+      
+      // 关闭排序面板
+      closeSort.addEventListener('click', () => {
+        sortPanel.classList.add('hidden');
+      });
+      
+      // 点击面板外部关闭
+      document.addEventListener('click', (e) => {
+        if (!filterPanel.contains(e.target) && e.target !== filterBtn) {
+          filterPanel.classList.add('hidden');
+        }
+        if (!sortPanel.contains(e.target) && e.target !== sortBtn) {
+          sortPanel.classList.add('hidden');
+        }
+      });
+      
+      // 任务卡片点击事件
+      const cards = document.querySelectorAll('.card-hover');
+      cards.forEach(card => {
+        card.addEventListener('click', () => {
+          // 这里可以添加查看任务详情的逻辑
+          alert('查看任务详情');
+        });
+      });
+      
+      // 排序选项点击
+      const sortOptions = sortPanel.querySelectorAll('button');
+      sortOptions.forEach(option => {
+        option.addEventListener('click', () => {
+          // 移除所有选中状态
+          sortOptions.forEach(opt => {
+            const checkIcon = opt.querySelector('i');
+            checkIcon.className = 'fa fa-sort text-gray-400';
+            opt.classList.remove('bg-light');
+          });
+          
+          // 设置当前选中状态
+          const checkIcon = option.querySelector('i');
+          checkIcon.className = 'fa fa-check text-primary';
+          option.classList.add('bg-light');
+          
+          // 关闭排序面板
+          sortPanel.classList.add('hidden');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
