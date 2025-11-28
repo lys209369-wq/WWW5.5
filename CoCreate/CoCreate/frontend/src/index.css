@@ -1,0 +1,146 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Cocreate Design System - Web3 Cyber Aesthetic */
+
+@layer base {
+  :root {
+    --background: 220 20% 4%;
+    --foreground: 180 100% 95%;
+
+    --card: 220 20% 8%;
+    --card-foreground: 180 100% 95%;
+
+    --popover: 220 20% 6%;
+    --popover-foreground: 180 100% 95%;
+
+    --primary: 187 100% 61%;
+    --primary-foreground: 220 20% 4%;
+
+    --secondary: 262 72% 63%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 220 15% 15%;
+    --muted-foreground: 220 10% 55%;
+
+    --accent: 262 72% 63%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 67%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 160 100% 41%;
+    --success-foreground: 220 20% 4%;
+
+    --warning: 45 100% 51%;
+    --warning-foreground: 220 20% 4%;
+
+    --border: 220 15% 18%;
+    --input: 220 15% 12%;
+    --ring: 187 100% 61%;
+
+    --radius: 0.75rem;
+
+    /* Custom gradients */
+    --gradient-cyber: linear-gradient(135deg, hsl(187 100% 61%) 0%, hsl(262 72% 63%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(220 20% 10%) 0%, hsl(220 20% 6%) 100%);
+    --gradient-glow: radial-gradient(ellipse at center, hsl(187 100% 61% / 0.15) 0%, transparent 70%);
+
+    /* Shadows */
+    --shadow-glow: 0 0 30px hsl(187 100% 61% / 0.3);
+    --shadow-card: 0 4px 24px hsl(220 20% 2% / 0.5);
+    --shadow-purple-glow: 0 0 30px hsl(262 72% 63% / 0.3);
+
+    /* Sidebar */
+    --sidebar-background: 220 20% 6%;
+    --sidebar-foreground: 180 100% 95%;
+    --sidebar-primary: 187 100% 61%;
+    --sidebar-primary-foreground: 220 20% 4%;
+    --sidebar-accent: 220 15% 12%;
+    --sidebar-accent-foreground: 180 100% 95%;
+    --sidebar-border: 220 15% 18%;
+    --sidebar-ring: 187 100% 61%;
+  }
+
+  .dark {
+    --background: 220 20% 4%;
+    --foreground: 180 100% 95%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted/30;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/30 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary/50;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-cyber);
+  }
+
+  .border-gradient {
+    border-image: var(--gradient-cyber) 1;
+  }
+
+  .glow-primary {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .glow-secondary {
+    box-shadow: var(--shadow-purple-glow);
+  }
+
+  .glass {
+    @apply backdrop-blur-xl bg-card/80;
+  }
+
+  .grid-pattern {
+    background-image: 
+      linear-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.3) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 10px hsl(var(--primary) / 0.3);
+    }
+    to {
+      box-shadow: 0 0 30px hsl(var(--primary) / 0.6);
+    }
+  }
+}

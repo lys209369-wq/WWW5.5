@@ -1,0 +1,2 @@
+{"abi":[{"type":"event","name":"ContributionNFTMinted","inputs":[{"name":"tokenId","type":"uint256","indexed":true},{"name":"projectId","type":"uint256","indexed":true},{"name":"taskId","type":"uint256","indexed":true},{"name":"contributor","type":"address","indexed":false},{"name":"proofCID","type":"string","indexed":false},{"name":"timestamp","type":"uint32","indexed":false}],"anonymous":false}]}
+
