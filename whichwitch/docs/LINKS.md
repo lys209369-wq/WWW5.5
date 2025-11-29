@@ -1,6 +1,6 @@
 # WhichWitch - 项目资源链接
 
-- **Live App**: https://which-witch-v1-mnoigi2vi-whichwitch.vercel.app/
+- **Live App**: https://which-witch-v1.vercel.app/
 - **GitHub 仓库**: https://github.com/iqnuxul/whichWitch
 
 - **PPT 演示**: https://www.canva.com/design/DAG5t6aAKIU/JLK99jHgZNk_ge5mS-qDsQ/view?utm_content=DAG5t6aAKIU&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h3a5cb0fa9a
