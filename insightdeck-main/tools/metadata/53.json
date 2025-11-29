@@ -1,0 +1,15 @@
+{
+  "name": "Insight #53",
+  "description": "A randomly generated insight card from InsightDeck.",
+  "image": "https://green-elaborate-hyena-15.mypinata.cloud/ipfs/bafybeieot47v4iya5nsmirtsjohkc6dbochi23uilbvusdlubdf2hovddu/53.png",
+  "attributes": [
+    {
+      "trait_type": "Insight",
+      "value": "Wealth is measured in freedom."
+    },
+    {
+      "trait_type": "Card ID",
+      "value": 53
+    }
+  ]
+}

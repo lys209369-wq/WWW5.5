@@ -1,0 +1,15 @@
+{
+  "name": "Insight #13",
+  "description": "A randomly generated insight card from InsightDeck.",
+  "image": "https://green-elaborate-hyena-15.mypinata.cloud/ipfs/bafybeieot47v4iya5nsmirtsjohkc6dbochi23uilbvusdlubdf2hovddu/13.png",
+  "attributes": [
+    {
+      "trait_type": "Insight",
+      "value": "Deadlines turn ideas into reality."
+    },
+    {
+      "trait_type": "Card ID",
+      "value": 13
+    }
+  ]
+}

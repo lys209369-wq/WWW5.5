@@ -1,0 +1,15 @@
+{
+  "name": "Insight #94",
+  "description": "A randomly generated insight card from InsightDeck.",
+  "image": "https://green-elaborate-hyena-15.mypinata.cloud/ipfs/bafybeieot47v4iya5nsmirtsjohkc6dbochi23uilbvusdlubdf2hovddu/94.png",
+  "attributes": [
+    {
+      "trait_type": "Insight",
+      "value": "Long-term thinking shortens the path."
+    },
+    {
+      "trait_type": "Card ID",
+      "value": 94
+    }
+  ]
+}

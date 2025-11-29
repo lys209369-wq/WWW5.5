@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pet Identity Studio</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Ethers v5 -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 text-amber-950">
+<div class="min-h-screen flex flex-col">
+
+    <header class="border-b border-amber-200 bg-white/70 backdrop-blur">
+        <div class="mx-auto max-w-6xl px-4 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex items-center gap-4">
+                <div class="h-12 w-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-orange-200 flex items-center justify-center text-2xl">
+                    🐾
+                </div>
+                <div>
+                    <p class="text-xs uppercase tracking-[0.4em] text-amber-500">Petchain</p>
+                    <h1 class="text-2xl font-bold text-amber-900">宠物链上创作工作室</h1>
+                    <p class="text-sm text-amber-600">Sepolia · IPFS · Soulbound Love</p>
+                </div>
+            </div>
+            <div class="flex flex-col sm:items-end sm:text-right text-sm text-amber-700 gap-2">
+                <button id="connectBtn"
+                        class="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-orange-200/70 transition hover:shadow-orange-300/90">
+                    连接钱包
+                </button>
+                <p id="walletAddress">连接钱包即可开始体验</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1">
+        <section class="mx-auto max-w-6xl px-4 py-10 grid gap-6 lg:grid-cols-[1.2fr,0.8fr]">
+            <div class="rounded-3xl border border-amber-100 bg-white/80 backdrop-blur p-8 shadow-xl shadow-orange-100">
+                <p class="text-sm font-medium uppercase tracking-[0.4em] text-amber-500">链上宠物护照</p>
+                <h2 class="mt-4 text-3xl sm:text-4xl font-bold leading-tight text-amber-950">为宠物打造永久身份、时刻与故事</h2>
+                <p class="mt-4 text-lg text-amber-700 leading-relaxed">铸造可验证的身份 NFT，上传 IPFS 影像，并在任意 Sepolia dApp 中证明归属权。</p>
+                <div class="mt-6 grid gap-4 sm:grid-cols-3">
+                    <div class="rounded-2xl border border-amber-100 bg-amber-50/80 p-4">
+                        <p class="text-xs uppercase text-amber-500 tracking-wide">Network</p>
+                        <p class="text-2xl font-semibold text-amber-900">Sepolia</p>
+                        <p class="text-sm text-amber-600">低成本 · 高可靠</p>
+                    </div>
+                    <div class="rounded-2xl border border-orange-100 bg-orange-50/80 p-4">
+                        <p class="text-xs uppercase text-orange-500 tracking-wide">Storage</p>
+                        <p class="text-2xl font-semibold text-orange-900">IPFS</p>
+                        <p class="text-sm text-orange-600">Powered by Pinata</p>
+                    </div>
+                    <div class="rounded-2xl border border-rose-100 bg-rose-50/80 p-4">
+                        <p class="text-xs uppercase text-rose-500 tracking-wide">Moments</p>
+                        <p class="text-2xl font-semibold text-rose-900">Forever</p>
+                        <p class="text-sm text-rose-600">时间戳见证陪伴</p>
+                    </div>
+                </div>
+            </div>
+            <div class="rounded-3xl border border-orange-100 bg-gradient-to-br from-orange-50 via-rose-50 to-white p-8 shadow-lg shadow-orange-100">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-amber-900">创作流程</h3>
+                    <span class="rounded-full bg-white/70 px-3 py-1 text-xs font-semibold text-orange-500">Ready</span>
+                </div>
+                <ul class="mt-6 space-y-4 text-sm text-amber-800">
+                    <li class="flex items-start gap-3">
+                        <span class="mt-0.5 text-lg">✨</span>
+                        <div>
+                            <p class="font-semibold">步骤 1 · 铸造宠物身份</p>
+                            <p class="text-amber-600">填写资料、上传头像、确认 Sepolia 链交易。</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="mt-0.5 text-lg">📸</span>
+                        <div>
+                            <p class="font-semibold">步骤 2 · 发布链上时刻</p>
+                            <p class="text-amber-600">照片上传至 Pinata，写入 PetMoments 合约。</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="mt-0.5 text-lg">🛡️</span>
+                        <div>
+                            <p class="font-semibold">步骤 3 · 分享与验证（待上线）</p>
+                            <p class="text-amber-600">所有信息可链上追溯，随时向社区展示。</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="mx-auto max-w-6xl px-4 pb-10">
+            <div class="grid gap-6 md:grid-cols-3">
+                <div class="rounded-2xl border border-amber-100 bg-white/80 p-6 shadow-sm">
+                    <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-2xl">🛡️</div>
+                    <h3 class="text-lg font-semibold text-amber-900">身份溯源</h3>
+                    <p class="mt-2 text-sm text-amber-700">生日、品种、特征永久上链，真实可信。</p>
+                </div>
+                <div class="rounded-2xl border border-orange-100 bg-white/80 p-6 shadow-sm">
+                    <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-50 text-2xl">🌈</div>
+                    <h3 class="text-lg font-semibold text-orange-900">创意画布</h3>
+                    <p class="mt-2 text-sm text-orange-700">为每个 Token 打造 IPFS 画廊，链上可验证。</p>
+                </div>
+                <div class="rounded-2xl border border-rose-100 bg-white/80 p-6 shadow-sm">
+                    <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-rose-50 text-2xl">🤝</div>
+                    <h3 class="text-lg font-semibold text-rose-900">社区即用（待上线）</h3>
+                    <p class="mt-2 text-sm text-rose-700">随处分享宠物卡片，即刻证明真伪与归属。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mx-auto max-w-6xl px-4 pb-16 space-y-6">
+            <nav class="flex flex-wrap gap-2 rounded-2xl border border-amber-100 bg-white/70 p-2 text-sm font-semibold text-amber-600">
+                <button class="tab-trigger" data-page-target="mint">宠物 NFT</button>
+                <button class="tab-trigger" data-page-target="moments">宠物时刻</button>
+            </nav>
+
+            <section class="tab-section space-y-8" data-page-section="mint">
+                <div class="grid gap-6 lg:grid-cols-[1.1fr,0.9fr]">
+                    <div class="rounded-3xl border border-amber-100 bg-white/90 p-6 shadow-lg shadow-orange-100">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm uppercase tracking-[0.4em] text-amber-500">Mint</p>
+                                <h3 class="text-2xl font-semibold text-amber-900">创建宠物身份 NFT</h3>
+                            </div>
+                            <span class="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-600">步骤一</span>
+                        </div>
+                        <div class="mt-6 grid gap-4 md:grid-cols-2">
+                            <label class="flex flex-col gap-2 text-sm font-medium text-amber-800">
+                                <span>宠物名字</span>
+                                <input id="petName" placeholder="例如：Mochi" class="input">
+                            </label>
+                            <label class="flex flex-col gap-2 text-sm font-medium text-amber-800">
+                                <span>物种</span>
+                                <input id="species" placeholder="Dog / Cat" class="input">
+                            </label>
+                            <label class="flex flex-col gap-2 text-sm font-medium text-amber-800">
+                                <span>品种</span>
+                                <input id="breed" placeholder="柴犬、英短..." class="input">
+                            </label>
+                            <label class="flex flex-col gap-2 text-sm font-medium text-amber-800">
+                                <span>生日</span>
+                                <input id="birthday" type="date" class="input">
+                            </label>
+                            <label class="flex flex-col gap-2 text-sm font-medium text-amber-800">
+                                <span>特征</span>
+                                <input id="traits" placeholder="好奇、勇敢..." class="input">
+                            </label>
+                            <label class="flex flex-col gap-2 text-sm font-medium text-amber-800">
+                                <span>城市</span>
+                                <input id="city" placeholder="Shanghai, Beijing..." class="input">
+                            </label>
+                        </div>
+
+                        <div class="mt-6 rounded-2xl border border-dashed border-amber-200 bg-amber-50/60 p-5">
+                            <p class="font-medium text-amber-900">📸 上传宠物写真</p>
+                            <p class="text-sm text-amber-600">建议方形图片，限制 5MB 以内。</p>
+                            <input type="file" id="imageInput" class="mt-4 block w-full text-sm text-amber-700 file:mr-4 file:rounded-full file:border-0 file:bg-gradient-to-r file:from-amber-400 file:to-orange-400 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:brightness-105">
+                        </div>
+
+                        <button id="mintBtn"
+                                class="mt-6 w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-green-500 py-3 text-lg font-semibold text-white shadow-lg shadow-emerald-200 transition hover:shadow-emerald-300">
+                            开始铸造
+                        </button>
+                        <p id="status" class="mt-3 text-center text-sm text-amber-700">准备在 Sepolia 铸造。</p>
+                    </div>
+
+                    <div class="rounded-3xl border border-orange-100 bg-white/90 p-6 shadow-lg shadow-orange-100">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm uppercase tracking-[0.4em] text-orange-500">Collection</p>
+                                <h3 class="text-2xl font-semibold text-orange-900">我的宠物</h3>
+                            </div>
+                            <span class="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-500">On-chain</span>
+                        </div>
+                        <div id="myPetsContainer" class="mt-4 space-y-4 text-sm text-orange-700">
+                            <p>连接钱包后可查看已铸造的宠物。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="tab-section hidden space-y-8" data-page-section="moments">
+                <div class="grid gap-6 lg:grid-cols-2">
+                    <div class="rounded-3xl border border-amber-100 bg-white/90 p-6 shadow">
+                        <p class="text-sm uppercase tracking-[0.4em] text-amber-500">Select Pet</p>
+                        <h3 class="text-2xl font-semibold text-amber-900">选择要管理的 NFT</h3>
+                        <select id="momentTokenSelect" class="input mt-4">
+                            <option value="">请先连接钱包并选择宠物</option>
+                        </select>
+                        <div id="selectedPetInfo" class="mt-6 rounded-2xl border border-dashed border-amber-200 bg-amber-50/70 p-4 text-sm text-amber-700">
+                            连接钱包后可查看宠物详情。
+                        </div>
+                    </div>
+
+                    <div class="rounded-3xl border border-orange-100 bg-white/90 p-6 shadow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm uppercase tracking-[0.4em] text-orange-500">Moment</p>
+                                <h3 class="text-2xl font-semibold text-orange-900">发布新的宠物时刻</h3>
+                            </div>
+                            <span class="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-500">步骤二</span>
+                        </div>
+                        <input type="file" id="momentImageInput"
+                               class="mt-6 block w-full text-sm text-orange-700 file:mr-4 file:rounded-full file:border-0 file:bg-gradient-to-r file:from-orange-400 file:to-rose-400 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:brightness-105">
+                        <textarea id="momentDescription" rows="4"
+                                  class="mt-4 w-full rounded-2xl border border-orange-100 bg-orange-50/50 p-4 text-sm text-orange-900 focus:border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-200"
+                                  placeholder="记录宠物此刻的小故事..."></textarea>
+                        <button id="publishMomentBtn"
+                                class="mt-4 w-full rounded-2xl bg-gradient-to-r from-orange-500 to-rose-500 py-3 text-lg font-semibold text-white shadow-lg shadow-rose-200 transition hover:shadow-rose-300">
+                            发布时刻
+                        </button>
+                        <p id="momentStatus" class="mt-3 text-sm text-orange-700"></p>
+                    </div>
+                </div>
+
+                <div class="rounded-3xl border border-rose-100 bg-white/90 p-6 shadow">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div>
+                            <p class="text-sm uppercase tracking-[0.4em] text-rose-500">Moments Gallery</p>
+                            <h3 class="text-2xl font-semibold text-rose-900">链上可验证</h3>
+                        </div>
+                        <span class="rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-500">Live feed</span>
+                    </div>
+                    <div id="momentsGrid" class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3"></div>
+                </div>
+            </section>
+        </section>
+    </main>
+</div>
+
+<div id="momentModal" class="hidden fixed inset-0 bg-black/60 z-10 flex items-center justify-center px-4">
+    <div class="bg-white/95 rounded-3xl shadow-2xl max-w-2xl w-full p-6 relative max-h-[90vh] overflow-auto">
+        <button id="closeMomentModal" class="absolute right-4 top-4 text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+        <img id="modalMomentImage" class="w-full rounded-2xl object-contain max-h-[70vh] mb-4 bg-gray-100" src="" alt="Moment detail">
+        <p id="modalMomentDescription" class="text-gray-800 mb-2"></p>
+        <p id="modalMomentTime" class="text-sm text-gray-500"></p>
+    </div>
+</div>
+
+<style>
+    .input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
+        border: 1px solid rgba(251, 191, 36, 0.4);
+        background: rgba(255, 255, 255, 0.9);
+        color: #92400e;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .input::placeholder {
+        color: rgba(146, 64, 14, 0.5);
+    }
+
+    .input:focus {
+        border-color: rgba(249, 115, 22, 0.7);
+        box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.2);
+        outline: none;
+    }
+
+    .tab-trigger {
+        padding: 0.65rem 1.5rem;
+        border-radius: 999px;
+        border: 2px solid transparent;
+        transition: all 0.2s ease;
+        color: rgba(146, 64, 14, 0.6);
+    }
+
+    .tab-trigger.active {
+        color: #92400e;
+        border-color: rgba(251, 146, 60, 0.8);
+        background: white;
+        box-shadow: 0 8px 20px rgba(251, 191, 36, 0.15);
+    }
+</style>
+
+<script>
+    const CONTRACT_ADDRESS = "0x9BC104faedA14611e72c51204Aed25a4D015b803";
+    const PET_MOMENTS_ADDRESS = "0x76E1D86d882C6d4DC7393350Eec45f0279C09dFc";
+    const PINATA_JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJlZjk1ZWRhZS0zOTE2LTQyZDgtODRhMy0xZDU2YjdmZGY2MGEiLCJlbWFpbCI6ImJvd3V0aW5nQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6IkZSQTEifSx7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6Ik5ZQzEifV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiI0Mzk1YmJkOWI2MTQ2NzAzZDJjNCIsInNjb3BlZEtleVNlY3JldCI6ImQyNDUzM2I5ZTJjOTJkN2Y3ODliYmJhYTBlN2E2NzI2ZTJiYjhhNzIyYTIxMzY2MDM0YTY5ZDA1Y2VjYjM4MDgiLCJleHAiOjE3OTUwNzE5MTV9.IrG3zq0gyqJ-7u9opkfhXSItbf20KW5aUAz8EJqmVLY";
+    const PINATA_FILE_ENDPOINT = "https://api.pinata.cloud/pinning/pinFileToIPFS";
+    const PINATA_METADATA_ENDPOINT = "https://api.pinata.cloud/pinning/pinJSONToIPFS";
+    const ABI = [
+        "function mintPet(string,string,string,uint64,string,string,string) external returns (uint256)",
+        "function tokenURI(uint256) view returns (string)",
+        "event PetMinted(uint256 indexed petId, address indexed owner)"
+    ];
+    const PET_MOMENTS_ABI = [
+        "function addMoment(uint256,string,string) external",
+        "function getAllMoments(uint256) view returns (tuple(string imageURI,string description,uint64 timestamp)[])"
+    ];
+
+    const tabButtons = document.querySelectorAll("[data-page-target]");
+    const tabSections = document.querySelectorAll("[data-page-section]");
+    const walletAddressEl = document.getElementById("walletAddress");
+    const statusEl = document.getElementById("status");
+    const momentStatusEl = document.getElementById("momentStatus");
+    const myPetsContainer = document.getElementById("myPetsContainer");
+    const mintBtn = document.getElementById("mintBtn");
+    const momentTokenSelect = document.getElementById("momentTokenSelect");
+    const selectedPetInfo = document.getElementById("selectedPetInfo");
+    const momentImageInput = document.getElementById("momentImageInput");
+    const momentDescriptionInput = document.getElementById("momentDescription");
+    const momentsGrid = document.getElementById("momentsGrid");
+    const momentModal = document.getElementById("momentModal");
+    const modalMomentImage = document.getElementById("modalMomentImage");
+    const modalMomentDescription = document.getElementById("modalMomentDescription");
+    const modalMomentTime = document.getElementById("modalMomentTime");
+    const closeMomentModalBtn = document.getElementById("closeMomentModal");
+
+    function setActivePage(page) {
+        tabSections.forEach(section => {
+            if (section.dataset.pageSection === page) {
+                section.classList.remove("hidden");
+            } else {
+                section.classList.add("hidden");
+            }
+        });
+
+        tabButtons.forEach(btn => {
+            if (btn.dataset.pageTarget === page) {
+                btn.classList.add("active");
+            } else {
+                btn.classList.remove("active");
+            }
+        });
+    }
+
+    tabButtons.forEach(btn => btn.addEventListener("click", () => setActivePage(btn.dataset.pageTarget)));
+    setActivePage("mint");
+
+    let provider, signer, contract, petMomentsContract;
+    let myPetIds = [];
+    let currentMoments = [];
+
+    document.getElementById("connectBtn").onclick = async function () {
+        if (!window.ethereum) return alert("请先安装 MetaMask！");
+
+        await ethereum.request({ method: "eth_requestAccounts" });
+
+        provider = new ethers.providers.Web3Provider(window.ethereum);
+        signer = provider.getSigner();
+
+        contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+        petMomentsContract = new ethers.Contract(PET_MOMENTS_ADDRESS, PET_MOMENTS_ABI, signer);
+
+        walletAddressEl.textContent = "已连接：" + await signer.getAddress();
+        await renderMyPets();
+    };
+
+    async function loadMyPets() {
+        if (!signer || !contract) return [];
+        const address = await signer.getAddress();
+        const filter = contract.filters.PetMinted(null, address);
+        const logs = await contract.queryFilter(filter);
+        return logs.map(log => log.args.petId.toString());
+    }
+
+    async function renderMyPets() {
+        if (!myPetsContainer) return;
+
+        if (!contract) {
+            myPetsContainer.innerHTML = '<p class="text-sm text-orange-600">请先连接钱包。</p>';
+            return;
+        }
+
+        myPetsContainer.innerHTML = '<p class="text-sm text-amber-500">加载中...</p>';
+
+        try {
+            const ids = await loadMyPets();
+            if (!ids.length) {
+                myPetIds = [];
+                myPetsContainer.innerHTML = '<p class="text-sm text-orange-600">尚未铸造宠物。</p>';
+                populateMomentSelect();
+                if (selectedPetInfo) selectedPetInfo.innerHTML = '连接钱包后可查看宠物详情。';
+                if (momentsGrid) momentsGrid.innerHTML = '<p class="text-sm text-amber-500">铸造宠物后可解锁画廊。</p>';
+                return;
+            }
+
+            myPetIds = ids;
+            populateMomentSelect();
+
+            let html = '';
+            for (const id of ids) {
+                const meta = await fetchTokenMetadata(id);
+                html += `
+            <div class="p-4 bg-gradient-to-br from-orange-50 to-amber-50 border border-amber-100 rounded-2xl shadow flex gap-4 items-center">
+                <img src="${ipfsToHttp(meta.image)}" class="w-20 h-20 rounded-xl object-cover border border-white shadow" />
+                <div>
+                    <p class="font-bold text-lg text-amber-900">${meta.name}</p>
+                    <p class="text-amber-600 text-sm">Token ID: ${id}</p>
+                </div>
+            </div>
+            `;
+            }
+
+            myPetsContainer.innerHTML = html;
+        } catch (err) {
+            console.error(err);
+            myPetsContainer.innerHTML = '<p class="text-sm text-red-500">加载失败：' + err.message + '</p>';
+        }
+    }
+
+    function ensurePinataJwt() {
+        if (!PINATA_JWT || PINATA_JWT === "PASTE_YOUR_PINATA_JWT_HERE") {
+            throw new Error("请在顶部配置 Pinata JWT");
+        }
+    }
+
+    async function pinataFetch(endpoint, options = {}) {
+        ensurePinataJwt();
+        const headers = {
+            ...(options.headers || {}),
+            Authorization: `Bearer ${PINATA_JWT}`
+        };
+
+        const response = await fetch(endpoint, {
+            ...options,
+            headers
+        });
+
+        let data = null;
+        const text = await response.text();
+        if (text) {
+            try {
+                data = JSON.parse(text);
+            } catch (err) {
+                throw new Error("Pinata 返回异常");
+            }
+        }
+
+        if (!response.ok) {
+            const message = data && (data.error || data.message);
+            throw new Error(message || "Pinata 请求失败");
+        }
+
+        if (!data) {
+            throw new Error("Pinata 返回空响应");
+        }
+
+        return data;
+    }
+
+    async function uploadImageToPinata(file) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const data = await pinataFetch(PINATA_FILE_ENDPOINT, {
+            method: "POST",
+            body: formData
+        });
+
+        if (!data.IpfsHash) throw new Error("未获取到 IpfsHash");
+        return `ipfs://${data.IpfsHash}`;
+    }
+
+    function ipfsToHttp(uri) {
+        return uri ? uri.replace("ipfs://", "https://ipfs.io/ipfs/") : "";
+    }
+
+    async function fetchTokenMetadata(tokenId) {
+        const tokenURI = await contract.tokenURI(tokenId);
+        const metadata = await fetch(ipfsToHttp(tokenURI));
+        return metadata.json();
+    }
+
+    function populateMomentSelect() {
+        if (!momentTokenSelect) return;
+        const previous = momentTokenSelect.value;
+        momentTokenSelect.innerHTML = '';
+
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = myPetIds.length ? "选择要查看的宠物" : "暂无可用宠物";
+        momentTokenSelect.appendChild(placeholder);
+
+        if (!myPetIds.length) {
+            currentMoments = [];
+            if (momentsGrid) momentsGrid.innerHTML = '<p class="text-sm text-amber-500">请选择宠物后查看时刻。</p>';
+            return;
+        }
+
+        myPetIds.forEach(id => {
+            const opt = document.createElement("option");
+            opt.value = id;
+            opt.textContent = `Token #${id}`;
+            momentTokenSelect.appendChild(opt);
+        });
+
+        const defaultId = myPetIds.includes(previous) ? previous : myPetIds[0];
+        momentTokenSelect.value = defaultId || "";
+        if (defaultId) {
+            handleTokenSelection(defaultId);
+        }
+    }
+
+    async function handleTokenSelection(tokenId) {
+        if (!tokenId) {
+            if (selectedPetInfo) selectedPetInfo.innerHTML = '请选择宠物查看详情。';
+            if (momentsGrid) momentsGrid.innerHTML = '<p class="text-sm text-amber-500">请选择宠物后查看时刻。</p>';
+            return;
+        }
+
+        try {
+            if (selectedPetInfo) selectedPetInfo.innerHTML = '正在加载元数据...';
+            const meta = await fetchTokenMetadata(tokenId);
+            if (selectedPetInfo) {
+                selectedPetInfo.innerHTML = `
+                <div class="flex gap-4 items-center">
+                    <img src="${ipfsToHttp(meta.image)}" class="w-24 h-24 rounded-2xl object-cover border border-white shadow">
+                    <div>
+                        <p class="text-lg font-bold text-amber-900">${meta.name}</p>
+                        <p class="text-sm text-amber-600">Token ID: ${tokenId}</p>
+                        <p class="text-sm text-amber-600">${meta.description || ''}</p>
+                    </div>
+                </div>`;
+            }
+            await renderMoments(tokenId);
+        } catch (err) {
+            console.error(err);
+            if (selectedPetInfo) selectedPetInfo.innerHTML = '<p class="text-sm text-red-500">加载失败：' + err.message + '</p>';
+        }
+    }
+
+    async function renderMoments(tokenId) {
+        if (!momentsGrid) return;
+        if (!petMomentsContract) {
+            momentsGrid.innerHTML = '<p class="text-sm text-amber-500">请先连接钱包。</p>';
+            return;
+        }
+
+        momentsGrid.innerHTML = '<p class="text-sm text-amber-500">加载中...</p>';
+
+        try {
+            const moments = await loadMoments(tokenId);
+            currentMoments = moments;
+
+            if (!moments.length) {
+                momentsGrid.innerHTML = '<p class="text-sm text-amber-500">暂无时刻，快来发布第一条吧！</p>';
+                return;
+            }
+
+            let html = '';
+            moments.forEach((moment, index) => {
+                html += `
+                    <div class="bg-gradient-to-br from-rose-50 to-orange-50 border border-rose-100 rounded-2xl shadow hover:shadow-lg transition cursor-pointer" data-moment-index="${index}">
+                        <div class="w-full bg-white rounded-t-2xl overflow-hidden flex items-center justify-center">
+                            <img src="${ipfsToHttp(moment.imageURI)}" class="w-full max-h-80 object-contain">
+                        </div>
+                        <div class="p-4">
+                            <p class="text-rose-900 font-medium truncate">${moment.description || '暂无描述'}</p>
+                            <p class="text-xs text-rose-500 mt-1">${formatTimestamp(moment.timestamp)}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            momentsGrid.innerHTML = html;
+            momentsGrid.querySelectorAll('[data-moment-index]').forEach(card => {
+                card.addEventListener('click', () => {
+                    const idx = parseInt(card.getAttribute('data-moment-index'), 10);
+                    openMomentModal(currentMoments[idx]);
+                });
+            });
+        } catch (err) {
+            console.error(err);
+            momentsGrid.innerHTML = '<p class="text-sm text-red-500">加载失败：' + err.message + '</p>';
+        }
+    }
+
+    async function loadMoments(tokenId) {
+        if (!petMomentsContract) return [];
+        const moments = await petMomentsContract.getAllMoments(tokenId);
+        return moments.map(m => ({
+            imageURI: m.imageURI,
+            description: m.description,
+            timestamp: m.timestamp.toNumber ? m.timestamp.toNumber() : Number(m.timestamp)
+        }));
+    }
+
+    function formatTimestamp(ts) {
+        if (!ts) return '';
+        return new Date(Number(ts) * 1000).toLocaleString();
+    }
+
+    function openMomentModal(moment) {
+        if (!moment) return;
+        modalMomentImage.src = ipfsToHttp(moment.imageURI);
+        modalMomentDescription.textContent = moment.description || '暂无描述';
+        modalMomentTime.textContent = formatTimestamp(moment.timestamp);
+        momentModal.classList.remove('hidden');
+    }
+
+    function closeMomentModal() {
+        momentModal.classList.add('hidden');
+    }
+
+    if (closeMomentModalBtn) closeMomentModalBtn.addEventListener('click', closeMomentModal);
+    if (momentModal) {
+        momentModal.addEventListener('click', function (event) {
+            if (event.target === momentModal) closeMomentModal();
+        });
+    }
+
+    if (momentTokenSelect) {
+        momentTokenSelect.addEventListener('change', async function () {
+            await handleTokenSelection(this.value);
+        });
+    }
+
+    publishMomentBtn.onclick = async function () {
+        if (!petMomentsContract) return alert("请先连接钱包。");
+
+        const tokenId = momentTokenSelect.value;
+        if (!tokenId) return alert("请选择一个宠物。");
+
+        const file = momentImageInput.files[0];
+        if (!file) return alert("请上传时刻照片。");
+
+        const description = momentDescriptionInput.value.trim();
+        if (!description) return alert("请填写描述。");
+
+        try {
+            if (publishMomentBtn.disabled) return;
+            const originalText = publishMomentBtn.dataset.originalText || publishMomentBtn.textContent.trim();
+            publishMomentBtn.dataset.originalText = originalText;
+            publishMomentBtn.disabled = true;
+            publishMomentBtn.classList.add("opacity-60", "cursor-not-allowed");
+            publishMomentBtn.textContent = "处理中...";
+
+            momentStatusEl.innerHTML = "图片上传中...";
+            const imageURI = await uploadImageToPinata(file);
+
+            momentStatusEl.innerHTML = "提交链上交易...";
+            const tx = await petMomentsContract.addMoment(tokenId, imageURI, description);
+            await tx.wait();
+
+            momentStatusEl.innerHTML = "✅ 发布成功！";
+            momentImageInput.value = "";
+            momentDescriptionInput.value = "";
+
+            await renderMoments(tokenId);
+        } catch (err) {
+            console.error(err);
+            momentStatusEl.innerHTML = "❌ 发布失败：" + err.message;
+        } finally {
+            publishMomentBtn.disabled = false;
+            publishMomentBtn.classList.remove("opacity-60", "cursor-not-allowed");
+            publishMomentBtn.textContent = publishMomentBtn.dataset.originalText || "发布时刻";
+        }
+    };
+
+    async function uploadMetadata(metadata) {
+        const data = await pinataFetch(PINATA_METADATA_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(metadata)
+        });
+
+        if (!data.IpfsHash) throw new Error("未获取到 IpfsHash");
+        return `ipfs://${data.IpfsHash}`;
+    }
+
+    mintBtn.onclick = async function () {
+        try {
+            if (!contract || !signer) {
+                alert("请先连接钱包并确保已切换到正确网络。");
+                return;
+            }
+
+            if (mintBtn.disabled) return;
+            const originalLabel = mintBtn.dataset.originalText || mintBtn.textContent.trim();
+            mintBtn.dataset.originalText = originalLabel;
+            mintBtn.disabled = true;
+            mintBtn.classList.add("opacity-60", "cursor-not-allowed");
+            mintBtn.textContent = "处理中...";
+
+            const name = petName.value;
+            const speciesValue = species.value;
+            const breedValue = breed.value;
+            const traitsValue = traits.value;
+            const cityValue = city.value;
+
+            const birthdayTimestamp = Math.floor(new Date(birthday.value).getTime() / 1000);
+            const file = imageInput.files[0];
+            if (!file) return alert("请上传宠物照片！");
+
+            statusEl.innerHTML = "图片上传中...";
+            const imageCID = await uploadImageToPinata(file);
+
+            const metadata = {
+                name,
+                description: "Pet identity NFT",
+                image: imageCID,
+                attributes: [
+                    { trait_type: "Species", value: speciesValue },
+                    { trait_type: "Breed", value: breedValue },
+                    { trait_type: "Birthday", value: birthdayTimestamp },
+                    { trait_type: "Traits", value: traitsValue },
+                    { trait_type: "City", value: cityValue }
+                ]
+            };
+
+            statusEl.innerHTML = "元数据上传中...";
+            const metadataCID = await uploadMetadata(metadata);
+
+            statusEl.innerHTML = "Sepolia 链上铸造中...";
+            const tx = await contract.mintPet(
+                name,
+                speciesValue,
+                breedValue,
+                birthdayTimestamp,
+                traitsValue,
+                cityValue,
+                metadataCID
+            );
+
+            await tx.wait();
+            statusEl.innerHTML = "🎉 铸造成功！Tx: " + tx.hash;
+            await renderMyPets();
+        } catch (err) {
+            console.error(err);
+            statusEl.innerHTML = "❌ 出错：" + err.message;
+        } finally {
+            mintBtn.disabled = false;
+            mintBtn.classList.remove("opacity-60", "cursor-not-allowed");
+            mintBtn.textContent = mintBtn.dataset.originalText || "开始铸造";
+        }
+    };
+</script>
+</body>
+</html>

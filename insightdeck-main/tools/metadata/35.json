@@ -1,0 +1,15 @@
+{
+  "name": "Insight #35",
+  "description": "A randomly generated insight card from InsightDeck.",
+  "image": "https://green-elaborate-hyena-15.mypinata.cloud/ipfs/bafybeieot47v4iya5nsmirtsjohkc6dbochi23uilbvusdlubdf2hovddu/35.png",
+  "attributes": [
+    {
+      "trait_type": "Insight",
+      "value": "You can’t optimize what you don’t measure."
+    },
+    {
+      "trait_type": "Card ID",
+      "value": 35
+    }
+  ]
+}

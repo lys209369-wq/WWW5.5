@@ -1,0 +1,15 @@
+{
+  "name": "Insight #82",
+  "description": "A randomly generated insight card from InsightDeck.",
+  "image": "https://green-elaborate-hyena-15.mypinata.cloud/ipfs/bafybeieot47v4iya5nsmirtsjohkc6dbochi23uilbvusdlubdf2hovddu/82.png",
+  "attributes": [
+    {
+      "trait_type": "Insight",
+      "value": "Less emotion, more motion."
+    },
+    {
+      "trait_type": "Card ID",
+      "value": 82
+    }
+  ]
+}

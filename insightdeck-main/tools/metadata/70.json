@@ -1,0 +1,15 @@
+{
+  "name": "Insight #70",
+  "description": "A randomly generated insight card from InsightDeck.",
+  "image": "https://green-elaborate-hyena-15.mypinata.cloud/ipfs/bafybeieot47v4iya5nsmirtsjohkc6dbochi23uilbvusdlubdf2hovddu/70.png",
+  "attributes": [
+    {
+      "trait_type": "Insight",
+      "value": "Learn from patterns, not predictions."
+    },
+    {
+      "trait_type": "Card ID",
+      "value": 70
+    }
+  ]
+}

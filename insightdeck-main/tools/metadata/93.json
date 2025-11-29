@@ -1,0 +1,15 @@
+{
+  "name": "Insight #93",
+  "description": "A randomly generated insight card from InsightDeck.",
+  "image": "https://green-elaborate-hyena-15.mypinata.cloud/ipfs/bafybeieot47v4iya5nsmirtsjohkc6dbochi23uilbvusdlubdf2hovddu/93.png",
+  "attributes": [
+    {
+      "trait_type": "Insight",
+      "value": "Be who you needed when you were younger."
+    },
+    {
+      "trait_type": "Card ID",
+      "value": 93
+    }
+  ]
+}

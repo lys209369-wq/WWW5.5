@@ -1,0 +1,15 @@
+{
+  "name": "Insight #5",
+  "description": "A randomly generated insight card from InsightDeck.",
+  "image": "https://green-elaborate-hyena-15.mypinata.cloud/ipfs/bafybeieot47v4iya5nsmirtsjohkc6dbochi23uilbvusdlubdf2hovddu/5.png",
+  "attributes": [
+    {
+      "trait_type": "Insight",
+      "value": "Clarity comes from doing, not thinking."
+    },
+    {
+      "trait_type": "Card ID",
+      "value": 5
+    }
+  ]
+}

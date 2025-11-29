@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HerGenesis | Web3 Revival</title>
+    <meta name="description" content="Reviving extinct female species in a Web3 ecosystem." />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Quicksand:wght@500;700&family=Silkscreen&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Fredoka', 'sans-serif'],
+              display: ['Quicksand', 'sans-serif'],
+              pixel: ['Silkscreen', 'cursive'],
+            },
+            colors: {
+              game: {
+                bg: '#F5F3FF', // Violet-50
+                primary: '#8B5CF6', // Violet-500
+                secondary: '#4ECDC4',
+                accent: '#FFE66D',
+                dark: '#2F2F2F',
+                surface: '#FFFFFF',
+              }
+            },
+            boxShadow: {
+              'game': '0px 6px 0px 0px rgba(0,0,0,0.1)',
+              'game-hover': '0px 8px 0px 0px rgba(0,0,0,0.1)',
+              'game-active': '0px 0px 0px 0px rgba(0,0,0,0.1)',
+              'card': '0px 8px 0px 0px #F3F4F6',
+            },
+            animation: {
+              'float': 'float 3s ease-in-out infinite',
+              'bounce-sm': 'bounce-sm 2s infinite',
+              'fade-in': 'fadeIn 0.3s ease-out forwards',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+              },
+              'bounce-sm': {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-5px)' },
+              },
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        font-family: "Fredoka", sans-serif;
+        background-color: #F5F3FF;
+        background-image: radial-gradient(#DDD6FE 15%, transparent 16%), radial-gradient(#DDD6FE 15%, transparent 16%);
+        background-size: 40px 40px;
+        background-position: 0 0, 20px 20px;
+        overflow-x: hidden;
+      }
+      
+      /* Hide Scrollbar Global */
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      * {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
+    "recharts": "https://aistudiocdn.com/recharts@^3.5.0",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.6"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

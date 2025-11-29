@@ -1,0 +1,15 @@
+{
+  "name": "Insight #42",
+  "description": "A randomly generated insight card from InsightDeck.",
+  "image": "https://green-elaborate-hyena-15.mypinata.cloud/ipfs/bafybeieot47v4iya5nsmirtsjohkc6dbochi23uilbvusdlubdf2hovddu/42.png",
+  "attributes": [
+    {
+      "trait_type": "Insight",
+      "value": "Your direction determines your destination."
+    },
+    {
+      "trait_type": "Card ID",
+      "value": 42
+    }
+  ]
+}

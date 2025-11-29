@@ -1,0 +1,15 @@
+{
+  "name": "Insight #58",
+  "description": "A randomly generated insight card from InsightDeck.",
+  "image": "https://green-elaborate-hyena-15.mypinata.cloud/ipfs/bafybeieot47v4iya5nsmirtsjohkc6dbochi23uilbvusdlubdf2hovddu/58.png",
+  "attributes": [
+    {
+      "trait_type": "Insight",
+      "value": "Skills have longer shelf lives than jobs."
+    },
+    {
+      "trait_type": "Card ID",
+      "value": 58
+    }
+  ]
+}

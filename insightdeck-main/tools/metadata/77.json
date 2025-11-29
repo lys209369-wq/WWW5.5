@@ -1,0 +1,15 @@
+{
+  "name": "Insight #77",
+  "description": "A randomly generated insight card from InsightDeck.",
+  "image": "https://green-elaborate-hyena-15.mypinata.cloud/ipfs/bafybeieot47v4iya5nsmirtsjohkc6dbochi23uilbvusdlubdf2hovddu/77.png",
+  "attributes": [
+    {
+      "trait_type": "Insight",
+      "value": "Listen to tone, not just words."
+    },
+    {
+      "trait_type": "Card ID",
+      "value": 77
+    }
+  ]
+}

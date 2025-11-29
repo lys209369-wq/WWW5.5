@@ -1,0 +1,15 @@
+{
+  "name": "Insight #27",
+  "description": "A randomly generated insight card from InsightDeck.",
+  "image": "https://green-elaborate-hyena-15.mypinata.cloud/ipfs/bafybeieot47v4iya5nsmirtsjohkc6dbochi23uilbvusdlubdf2hovddu/27.png",
+  "attributes": [
+    {
+      "trait_type": "Insight",
+      "value": "No one is coming to save you."
+    },
+    {
+      "trait_type": "Card ID",
+      "value": 27
+    }
+  ]
+}
